@@ -60,6 +60,8 @@ public:
     void printReg();
     void printTable();
 
+    bool isNumber(const QString& str);
+
 private slots:
     void on_action_Exit_triggered();
 

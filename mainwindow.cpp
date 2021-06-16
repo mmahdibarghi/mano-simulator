@@ -5,6 +5,7 @@
 #include<QFile>
 #include<QMessageBox>
 #include<sstream>
+#include <ctype.h>
 using namespace std;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -86,6 +87,20 @@ void MainWindow::printTable()
         ui->ram_tb->setItem(v,3,empty);
 
     }
+}
+
+bool MainWindow::isNumber(const QString &str)
+{
+    string check=str.toStdString();
+    for (char const &c : check)
+    {
+        if(c=='a' || c=='b' || c=='c' || c=='d' || c=='e' || c=='f'|| c=='A' || c=='B' || c=='C' || c=='D' || c=='E' || c=='F')
+        {
+            continue;
+        }
+        if (isdigit(c) == 0) return false;
+    }
+       return true;
 }
 
 
@@ -216,12 +231,14 @@ void MainWindow::on_reset_btn_clicked()
     resetRam();
     printTable();
     printReg();
+    ui->console->setText("");
 
 
 }
 
 void MainWindow::on_compile_btn_clicked()
 {
+    int lc=0;
     ui->console->setText("");
     QStringList commands = ui->editor->toPlainText().split('\n', QString::SkipEmptyParts);
     int tcommmands=commands.size();
@@ -237,12 +254,21 @@ void MainWindow::on_compile_btn_clicked()
             if(riz.at(0)=="//")
             {
                 //comment
-                ui->console->setText("error in line:"+QString::number(i+1)+"\n");
+                //ui->console->setText("comment in line:"+QString::number(i+1)+"\n");
                 break;
             }
-            else
+            else if(riz.at(0)=="ORG")
             {
+                if(isNumber(riz.at(1)))
+                {
+                    bool ok=1;
+                    lc=riz.at(1).toInt(&ok,16);
 
+                }
+                else
+                {
+                    ui->console->setText("error in line:"+QString::number(i+1)+"\n");
+                }
             }
 
         }
