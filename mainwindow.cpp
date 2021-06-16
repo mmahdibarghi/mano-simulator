@@ -4,6 +4,7 @@
 #include<fstream>
 #include<QFile>
 #include<QMessageBox>
+#include<sstream>
 using namespace std;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -23,6 +24,68 @@ MainWindow::~MainWindow()
 {
 
     delete ui;
+}
+
+void MainWindow::emptyTable()
+{
+    for(int v=0;v<4096;v++)
+    {
+        QString result = QString::number( v, 16 ).toUpper();
+        QTableWidgetItem *itm = new QTableWidgetItem();
+        QTableWidgetItem *empty = new QTableWidgetItem();
+        itm->setText(result);
+        empty->setText("0000");
+        ui->ram_tb->insertRow(v);
+        ui->ram_tb->setItem(v,1,itm);
+        ui->ram_tb->setItem(v,3,empty);
+
+    }
+}
+
+void MainWindow::resetRam()
+{
+    for(int i=0;i<4096;i++)
+    {
+        ram[i].reset();
+    }
+}
+
+void MainWindow::printReg()
+{
+    ui->sc_line->setText(QString::number( SC.to_ulong(), 16 ).toUpper());
+    ui->pc_line->setText(QString::number( PC.to_ulong(), 16 ).toUpper());
+    ui->ar_line->setText(QString::number( AR.to_ulong(), 16 ).toUpper());
+    ui->ir_line->setText(QString::number( IR.to_ulong(), 16 ).toUpper());
+    ui->dr_line->setText(QString::number( DR.to_ulong(), 16 ).toUpper());
+    ui->ac_line->setText(QString::number( AC.to_ulong(), 16 ).toUpper());
+    ui->tr_line->setText(QString::number( TR.to_ulong(), 16 ).toUpper());
+    ui->inpr_line->setText(QString::number( INPR.to_ulong(), 16 ).toUpper());
+    ui->outr_line->setText(QString::number( OUTR.to_ulong(), 16 ).toUpper());
+    ui->i_line->setText(QString::number( I.to_ulong(), 16 ).toUpper());
+    ui->s_line->setText(QString::number( S.to_ulong(), 16 ).toUpper());
+    ui->e_line->setText(QString::number( E.to_ulong(), 16 ).toUpper());
+    ui->r_line->setText(QString::number( R.to_ulong(), 16 ).toUpper());
+    ui->ien_line->setText(QString::number( IEN.to_ulong(), 16 ).toUpper());
+    ui->fgi_line->setText(QString::number( FGI.to_ulong(), 16 ).toUpper());
+    ui->fgo_line->setText(QString::number( FGO.to_ulong(), 16 ).toUpper());
+
+}
+
+void MainWindow::printTable()
+{
+    ui->ram_tb->setRowCount(0);
+    for(int v=0;v<4096;v++)
+    {
+        QString result = QString::number( v, 16 ).toUpper();
+        QTableWidgetItem *itm = new QTableWidgetItem();
+        QTableWidgetItem *empty = new QTableWidgetItem();
+        itm->setText(result);
+        empty->setText(QString::number( ram[v].to_ulong(), 16 ).toUpper());
+        ui->ram_tb->insertRow(v);
+        ui->ram_tb->setItem(v,1,itm);
+        ui->ram_tb->setItem(v,3,empty);
+
+    }
 }
 
 
@@ -134,51 +197,26 @@ void MainWindow::on_newbtn_clicked()
 
 void MainWindow::on_reset_btn_clicked()
 {
-    Sc = 0;
-    Pc = 0;
-    Ar = 0;
-    Ir = 0;
-    Dr = 0;
-    Ac = 0;
-    Tr = 0;
-    Inpr = 0;
-    Outr = 0;
-    I = 0;
-    S = 0;
-    E = 0;
-    R = 0;
-    Ien = 0;
-    FGI = 0;
-    Fgo = 0;
-    ui->sc_line->setText(QString::number(Sc));
-    ui->pc_line->setText(QString::number(Pc));
-    ui->ar_line->setText(QString::number(Ar));
-    ui->ir_line->setText(QString::number(Ir));
-    ui->dr_line->setText(QString::number(Dr));
-    ui->ac_line->setText(QString::number(Ac));
-    ui->tr_line->setText(QString::number(Tr));
-    ui->inpr_line->setText(QString::number(Inpr));
-    ui->outr_line->setText(QString::number(Outr));
-    ui->i_line->setText(QString::number(I));
-    ui->s_line->setText(QString::number(S));
-    ui->e_line->setText(QString::number(E));
-    ui->r_line->setText(QString::number(E));
-    ui->ien_line->setText(QString::number(Ien));
-    ui->fgi_line->setText(QString::number(FGI));
-    ui->fgo_line->setText(QString::number(Fgo));
+    SC.reset();
+    PC.reset();
+    AR.reset();
+    IR.reset();
+    DR.reset();
+    AC.reset();
+    TR.reset();
+    INPR.reset();
+    OUTR.reset();
+    I.reset();
+    S.reset();
+    E.reset();
+    R.reset();
+    IEN.reset();
+    FGI.reset();
+    FGO.reset();
+    resetRam();
+    printTable();
+    printReg();
 
-    for(int v=0;v<4096;v++)
-    {
-        QString result = QString::number( v, 16 ).toUpper();
-        QTableWidgetItem *itm = new QTableWidgetItem();
-        QTableWidgetItem *empty = new QTableWidgetItem();
-        itm->setText(result);
-        empty->setText("0000");
-        ui->ram_tb->insertRow(v);
-        ui->ram_tb->setItem(v,1,itm);
-        ui->ram_tb->setItem(v,3,empty);
-
-    }
 
 }
 
