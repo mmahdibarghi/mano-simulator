@@ -371,7 +371,142 @@ void MainWindow::on_compile_btn_clicked()
             }
             ///////////////////////////////////////////////////////////////////////////////////////////////
 
-            //TO DO
+            //orginal commands
+            else if(riz.at(0)=="INP")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0xf800;
+            }
+
+            else if(riz.at(0)=="OUT")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0xf400;
+            }
+            else if(riz.at(0)=="SKI")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0xf200;
+            }
+            else if(riz.at(0)=="SKO")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0xf100;
+            }
+            else if(riz.at(0)=="ION")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0xf080;
+            }
+            else if(riz.at(0)=="IOF")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0xf040;
+            }
+            else if(riz.at(0)=="CLA")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0x7800;
+            }
+
+            else if(riz.at(0)=="CLE")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0x7400;
+            }
+            else if(riz.at(0)=="CMA")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0x7200;
+            }
+            else if(riz.at(0)=="CME")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0x7100;
+            }
+            else if(riz.at(0)=="CIR")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0x7080;
+            }
+            else if(riz.at(0)=="CIL")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0x7040;
+            }
+            else if(riz.at(0)=="INC")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0x7020;
+            }
+            else if(riz.at(0)=="SPA")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0x7010;
+            }
+            else if(riz.at(0)=="SNA")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0x7008;
+            }
+            else if(riz.at(0)=="SZA")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0x7004;
+            }
+            else if(riz.at(0)=="SZE")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0x7002;
+            }
+            else if(riz.at(0)=="HLT")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                ram[lc]=0x7001;
+            }
+
+
+
+
+
+
+
 
 
 
