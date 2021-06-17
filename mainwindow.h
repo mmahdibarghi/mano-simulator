@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include<bitset>
 #include <QMainWindow>
+#include<map>
 using namespace std;
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -54,6 +55,9 @@ public:
     inline void logicUnitAND(){ AC = AC & DR; }
     inline void logicUnitCMA() { AC = ~AC; }
     void logicUnitCME() { E = ~E; }
+    void arithmeticUnitADD();
+    void arithmeticUnitCIR();
+    void arithmeticUnitCIL();
 
 
 
@@ -83,6 +87,10 @@ private slots:
 
     void on_compile_btn_clicked();
 
+    void on_run_btn_clicked();
+
+    void on_next_btn_clicked();
+
 private:
     Ui::MainWindow *ui;
     QString issaved="";
@@ -103,6 +111,13 @@ private:
     bitset<1> IEN;
     bitset<1> FGI;
     bitset<1> FGO;
+    map<QString,int> allDatas;
+
+
+
+    int reseter=1;
+    int compiled=0;
+
 
 
 
