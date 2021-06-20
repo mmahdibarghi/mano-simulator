@@ -112,7 +112,8 @@ private:
     bitset<1> FGI;
     bitset<1> FGO;
     map<QString,int> allDatas;
-
+    map<QString,int> firstallDatas;
+    QStringList commands;
 
 
     int reseter=1;

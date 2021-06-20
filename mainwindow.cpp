@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setWindowTitle("MyText Editor");
+    setWindowTitle("MANO SIMULATOR");
     ui->editor->setFocus();
     ui->savebtn->setIcon(QIcon(":/pic/saveicon"));
     ui->openbtn->setIcon(QIcon(":/pic/openicon"));
@@ -121,7 +121,7 @@ bool MainWindow::isNumber(const QString &str)
     string check=str.toStdString();
     for (char const &c : check)
     {
-        if(c=='a' || c=='b' || c=='c' || c=='d' || c=='e' || c=='f'|| c=='A' || c=='B' || c=='C' || c=='D' || c=='E' || c=='F'|| c=='-')
+        if(c=='a' || c=='b' || c=='c' || c=='d' || c=='e' || c=='f'|| c=='A' || c=='B' || c=='C' || c=='D' || c=='E' || c=='F'|| c=='-' || c=='+')
         {
             continue;
         }
@@ -283,7 +283,12 @@ void MainWindow::on_reset_btn_clicked()
     printTable();
     printReg();
     ui->console->setText("");
+    allDatas.clear();
+    firstallDatas.clear();    
+    commands.clear();
     compiled=0;
+
+
 
 
 }
@@ -292,10 +297,48 @@ void MainWindow::on_compile_btn_clicked()
 {
     compiled=1;
     int lc=0;
+    int lc1=0;
     ui->console->setText("");
-    QStringList commands = ui->editor->toPlainText().split('\n', QString::SkipEmptyParts);
+    commands = ui->editor->toPlainText().split('\n', QString::SkipEmptyParts);
     int tcommmands=commands.size();
     int endp1=0;
+
+
+    for(int i=0;i<tcommmands;i++)
+    {
+        QStringList riz = commands.at(i).split(' ', QString::SkipEmptyParts);
+        if(riz.at(0)[riz.at(0).size()-1]==',')
+        {
+            QString wait="";
+            for(int cw=0;cw<riz.at(0).size()-1;cw++)
+            {
+                wait+=riz.at(0)[cw];
+            }
+            firstallDatas[wait]=lc1;
+        }
+        else if(riz.at(0)=="ORG")
+        {
+            if(isNumber(riz.at(1)))
+            {
+                bool ok=1;
+                lc1=riz.at(1).toInt(&ok,16);
+                continue;
+
+            }
+            else
+            {
+                ui->console->setText("error in line:"+QString::number(i+1)+"\n You need hex number after ORG. \n");
+                compiled=0;
+                break;
+            }
+        }
+
+        lc1++;
+
+    }
+
+
+
     for(int i=0;i<tcommmands;i++)
     {
         //each lines
@@ -316,6 +359,7 @@ void MainWindow::on_compile_btn_clicked()
                 {
                     bool ok=1;
                     lc=riz.at(1).toInt(&ok,16);
+                    continue;
 
                 }
                 else
@@ -366,12 +410,185 @@ void MainWindow::on_compile_btn_clicked()
                     }
                 }
                 //ui->console->setText("test label:"+QString::number(allDatas["test,"])+"\n");
-                lc++;
-                continue;
+                //lc++;
+                //continue;
             }
             ///////////////////////////////////////////////////////////////////////////////////////////////
 
             //orginal commands
+            else if(riz.at(0)=="AND")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                if(firstallDatas[riz.at(1)]==0)
+                {
+                    ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
+                    compiled=0;
+                    break;
+
+                }
+                if(riz.size()>=3 && riz.at(2)=='I')
+                {
+                    ram[lc]=0x8000+firstallDatas[riz.at(1)];
+                }
+                else
+                {
+                    ram[lc]=0x0000+firstallDatas[riz.at(1)];
+                }
+
+            }
+
+
+
+            else if(riz.at(0)=="ADD")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                if(firstallDatas[riz.at(1)]==0)
+                {
+                    ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
+                    compiled=0;
+                    break;
+
+                }
+                if(riz.size()>=3 && riz.at(2)=='I')
+                {
+                    ram[lc]=0x9000+firstallDatas[riz.at(1)];
+                }
+                else
+                {
+                    ram[lc]=0x1000+firstallDatas[riz.at(1)];
+                }
+
+            }
+
+
+
+
+            else if(riz.at(0)=="LDA")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                if(firstallDatas[riz.at(1)]==0)
+                {
+                    ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
+                    compiled=0;
+                    break;
+
+                }
+                if(riz.size()>=3 && riz.at(2)=='I')
+                {
+                    ram[lc]=0xA000+firstallDatas[riz.at(1)];
+                }
+                else
+                {
+                    ram[lc]=0x2000+firstallDatas[riz.at(1)];
+                }
+
+            }
+
+
+
+            else if(riz.at(0)=="STA")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                if(firstallDatas[riz.at(1)]==0)
+                {
+                    ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
+                    compiled=0;
+                    break;
+
+                }
+                if(riz.size()>=3 && riz.at(2)=='I')
+                {
+                    ram[lc]=0xB000+firstallDatas[riz.at(1)];
+                }
+                else
+                {
+                    ram[lc]=0x3000+firstallDatas[riz.at(1)];
+                }
+
+            }
+
+            else if(riz.at(0)=="BUN")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                if(firstallDatas[riz.at(1)]==0)
+                {
+                    ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
+                    compiled=0;
+                    break;
+
+                }
+                if(riz.size()>=3 && riz.at(2)=='I')
+                {
+                    ram[lc]=0xC000+firstallDatas[riz.at(1)];
+                }
+                else
+                {
+                    ram[lc]=0x4000+firstallDatas[riz.at(1)];
+                }
+
+            }
+
+
+
+
+            else if(riz.at(0)=="BSA")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                if(firstallDatas[riz.at(1)]==0)
+                {
+                    ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
+                    compiled=0;
+                    break;
+
+                }
+                if(riz.size()>=3 && riz.at(2)=='I')
+                {
+                    ram[lc]=0xD000+firstallDatas[riz.at(1)];
+                }
+                else
+                {
+                    ram[lc]=0x5000+firstallDatas[riz.at(1)];
+                }
+
+            }
+
+
+            else if(riz.at(0)=="ISZ")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                if(firstallDatas[riz.at(1)]==0)
+                {
+                    ui->console->setText("Error in line: "+QString::number(i+1)+"there is no label by name "+riz.at(1));
+                    compiled=0;
+                    break;
+
+                }
+                if(riz.size()>=3 && riz.at(2)=='I')
+                {
+                    ram[lc]=0xE000+firstallDatas[riz.at(1)];
+                }
+                else
+                {
+                    ram[lc]=0x6000+firstallDatas[riz.at(1)];
+                }
+
+            }
+
+
             else if(riz.at(0)=="INP")
             {
                 QTableWidgetItem *itmintraction = new QTableWidgetItem();
@@ -542,10 +759,11 @@ void MainWindow::on_compile_btn_clicked()
 
 
 
+            lc++;
 
         //first for
     }
-    if(!endp1)
+    if(!endp1 && compiled)
     {
         ui->console->setText("error in compiling \n there is no END!\n");
         compiled=0;
