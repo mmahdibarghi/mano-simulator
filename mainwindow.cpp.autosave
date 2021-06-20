@@ -828,7 +828,7 @@ void MainWindow::on_compile_btn_clicked()
 
 void MainWindow::on_run_btn_clicked()
 {
-
+    S=1;
     if(!compiled)
     {
         ui->console->setText("\n ERROR: First,Please compile your program!\n");
@@ -876,8 +876,9 @@ void MainWindow::on_run_btn_clicked()
                 PC=lc;
                 AR=PC;
                 //t1
-                //lc++;
+                
                 inrPC();
+                lc++;
                 IR=ram[AR.to_ulong()];
                 //t2
                 for (int bitC=0;bitC<12;bitC++)
@@ -889,7 +890,7 @@ void MainWindow::on_run_btn_clicked()
 
 
 
-                lc++;
+                //lc++;
                 ////////////////
 
 
@@ -942,16 +943,7 @@ void MainWindow::on_run_btn_clicked()
                 //orginal commands
                 else if(riz.at(0)=="AND")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
-                        compiled=0;
-                        break;
-
-                    }
+                    
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
                         for (int bitC=0;bitC<12;bitC++)
@@ -972,16 +964,7 @@ void MainWindow::on_run_btn_clicked()
 
                 else if(riz.at(0)=="ADD")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
-                        compiled=0;
-                        break;
-
-                    }
+                    
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
                         for (int bitC=0;bitC<12;bitC++)
@@ -1002,16 +985,7 @@ void MainWindow::on_run_btn_clicked()
 
                 else if(riz.at(0)=="LDA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
-                        compiled=0;
-                        break;
-
-                    }
+                    
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
                         for (int bitC=0;bitC<12;bitC++)
@@ -1031,16 +1005,7 @@ void MainWindow::on_run_btn_clicked()
 
                 else if(riz.at(0)=="STA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
-                        compiled=0;
-                        break;
-
-                    }
+                    
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
                         for (int bitC=0;bitC<12;bitC++)
@@ -1058,16 +1023,7 @@ void MainWindow::on_run_btn_clicked()
 
                 else if(riz.at(0)=="BUN")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
-                        compiled=0;
-                        break;
-
-                    }
+                   
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
                         for (int bitC=0;bitC<12;bitC++)
@@ -1088,16 +1044,7 @@ void MainWindow::on_run_btn_clicked()
 
                 else if(riz.at(0)=="BSA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
-                        compiled=0;
-                        break;
-
-                    }
+                   
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
                         for (int bitC=0;bitC<12;bitC++)
@@ -1116,16 +1063,7 @@ void MainWindow::on_run_btn_clicked()
 
                 else if(riz.at(0)=="ISZ")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line: "+QString::number(i+1)+"there is no label by name "+riz.at(1));
-                        compiled=0;
-                        break;
-
-                    }
+                   
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
                         for (int bitC=0;bitC<12;bitC++)
@@ -1187,88 +1125,82 @@ void MainWindow::on_run_btn_clicked()
                 }
                 else if(riz.at(0)=="CLA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7800;
+                    SC=0;
+                    AC=0;
                 }
 
                 else if(riz.at(0)=="CLE")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7400;
+                    SC=0;
+                    E=0;
                 }
                 else if(riz.at(0)=="CMA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7200;
+                    SC=0;
+                    AC.flip();
                 }
                 else if(riz.at(0)=="CME")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7100;
+                    SC=0;
+                    E.flip();
                 }
                 else if(riz.at(0)=="CIR")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7080;
+                   SC=0;
+                   arithmeticUnitCIR();
+                   
                 }
                 else if(riz.at(0)=="CIL")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7040;
+                    SC=0;
+                    arithmeticUnitCIL();
                 }
                 else if(riz.at(0)=="INC")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7020;
+                    SC=0;
+                    inrAC();
                 }
                 else if(riz.at(0)=="SPA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7010;
+                    SC=0;
+                    if(AC[15]==0)
+                    {
+                        inrPC();
+                        lc++;
+                    }
                 }
                 else if(riz.at(0)=="SNA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7008;
+                    SC=0;
+                    if(AC[15]==1)
+                    {
+                        inrPC();
+                        lc++;
+                    }
                 }
                 else if(riz.at(0)=="SZA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7004;
+                    SC=0;
+                    if(AC.to_ulong()==0)
+                    {
+                        inrPC();
+                        lc++;
+                    }
                 }
                 else if(riz.at(0)=="SZE")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7002;
+                    SC=0;
+                    if(E.to_ulong()==0)
+                    {
+                        inrPC();
+                        lc++;
+                    }
                 }
                 else if(riz.at(0)=="HLT")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7001;
+                    S=0;
+                    ui->console->setText("program run successfully! \n");
+                    return;
                 }
 
 
