@@ -5,5 +5,9 @@
         <file>newicon.png</file>
         <file>saveasicon.png</file>
         <file>closeicon.png</file>
+        <file>C:/Users/SabaNet/Desktop/Untitled-1.jpg</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>C:/Users/SabaNet/Desktop/Untitled-1.jpg</file>
     </qresource>
 </RCC>

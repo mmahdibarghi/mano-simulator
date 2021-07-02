@@ -51,6 +51,20 @@ void MainWindow::resetRam()
     }
 }
 
+void MainWindow::arithmeticUnitADD()
+{
+    std::bitset<1> cOut(0);
+    std::bitset<16> sum(0);
+
+    for(quint16 i = 0; i < AC.size(); i++){
+        sum[i] = AC[i] ^ DR[i] ^ cOut[0];
+        cOut = cOut[0] & (AC[i] ^ DR[i]) | (AC[i] & DR[i]);
+    }
+
+    E = cOut;
+    AC = sum;
+}
+
 void MainWindow::printReg()
 {
     ui->sc_line->setText(QString::number( SC.to_ulong(), 16 ).toUpper());
@@ -287,6 +301,11 @@ void MainWindow::on_reset_btn_clicked()
     firstallDatas.clear();    
     commands.clear();
     compiled=0;
+    clk=0;
+    lineStep=0;
+    memorystep=0;
+    ui->run_btn->setEnabled(true);
+    ui->next_btn->setEnabled(true);
 
 
 
@@ -399,6 +418,8 @@ void MainWindow::on_compile_btn_clicked()
                         bool ok=1;
                         convertNumber=riz.at(2).toInt(&ok,16);
                         ram[lc]=convertNumber;
+                        lc++;
+                        continue;
                     }
                     else
                     {
@@ -414,6 +435,8 @@ void MainWindow::on_compile_btn_clicked()
                         bool ok=1;
                         convertNumber=riz.at(2).toInt(&ok,10);
                         ram[lc]=convertNumber;
+                        lc++;
+                        continue;
                     }
                     else
                     {
@@ -425,6 +448,52 @@ void MainWindow::on_compile_btn_clicked()
                 //ui->console->setText("test label:"+QString::number(allDatas["test,"])+"\n");
                 //lc++;
                 //continue;
+                else
+                {
+
+                    for(int x=0;x<(riz.length())-1;x++)
+                    {
+                        riz[x]=riz[x+1];
+                    }
+                }
+
+            }
+            if(riz.at(0)=="DEC")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                if(riz.length()>1 && isNumber(riz.at(1)) )
+                {
+                    bool ok=1;
+                    int convertNumber=riz.at(1).toInt(&ok,10);
+                    ram[lc]=convertNumber;
+                }
+                else
+                {
+                    ui->console->setText("error in line:"+QString::number(i+1)+"\n You need valid number after DEC. \n");
+                    compiled=0;
+                    break;
+                }
+
+            }
+            else if(riz.at(0)=="HEX")
+            {
+                QTableWidgetItem *itmintraction = new QTableWidgetItem();
+                itmintraction->setText(commands.at(i));
+                ui->ram_tb->setItem(lc,2,itmintraction);
+                if(riz.length()>1 && isNumber(riz.at(1)))
+                {
+                    bool ok=1;
+                    int convertNumber=riz.at(1).toInt(&ok,16);
+                    ram[lc]=convertNumber;
+                }
+                else
+                {
+                    ui->console->setText("error in line:"+QString::number(i+1)+"\n You need valid number after HEX. \n");
+                    compiled=0;
+                    break;
+                }
             }
             ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -766,6 +835,7 @@ void MainWindow::on_compile_btn_clicked()
             {
                 //bad command
                 ui->console->setText("error in line:"+QString::number(i+1)+"\n Bad Command. \n");
+                ui->console->append(commands.at(i));
                 compiled=0;
                 break;
             }
@@ -828,7 +898,7 @@ void MainWindow::on_compile_btn_clicked()
 
 void MainWindow::on_run_btn_clicked()
 {
-
+    S=1;
     if(!compiled)
     {
         ui->console->setText("\n ERROR: First,Please compile your program!\n");
@@ -843,13 +913,6 @@ void MainWindow::on_run_btn_clicked()
 
         for(int i=0;i<tcommmands;i++)
         {
-            if(lc>4096)
-            {
-                ui->console->setText("ERROR: OVERFLOW RAM!\n");
-                compiled=0;
-                break;
-            }
-            //each lines
 
             QStringList riz = commands.at(i).split(' ', QString::SkipEmptyParts);
     //        int tparts=commands.size();
@@ -876,8 +939,10 @@ void MainWindow::on_run_btn_clicked()
                 PC=lc;
                 AR=PC;
                 //t1
-                //lc++;
+                SC=1;
+
                 inrPC();
+                lc++;
                 IR=ram[AR.to_ulong()];
                 //t2
                 for (int bitC=0;bitC<12;bitC++)
@@ -889,69 +954,35 @@ void MainWindow::on_run_btn_clicked()
 
 
 
-                lc++;
-                ////////////////
+                //lc++;
+                ///////////////////////////////////////////////////////////////////
 
 
                 if(riz.at(0)[riz.at(0).size()-1]==',')
                 {
-                    allDatas[riz.at(0)]=i+1;
-                    QTableWidgetItem *itmlabel = new QTableWidgetItem();
-                    itmlabel->setText(riz.at(0));
-                    ui->ram_tb->setItem(lc,0,itmlabel);
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    int convertNumber;
-                    if(riz.at(1)=="HEX")
-                    {
-                        if(isNumber(riz.at(2)))
+
+                        for(int x=0;x<(riz.length())-1;x++)
                         {
-                            bool ok=1;
-                            convertNumber=riz.at(2).toInt(&ok,16);
-                            ram[lc]=convertNumber;
+                            riz[x]=riz[x+1];
                         }
-                        else
-                        {
-                            ui->console->setText("error in line:"+QString::number(i+1)+"\n You need valid number after HEX. \n");
-                            compiled=0;
-                            break;
-                        }
-                    }
-                    else if(riz.at(1)=="DEC")
-                    {
-                        if(isNumber(riz.at(2)))
-                        {
-                            bool ok=1;
-                            convertNumber=riz.at(2).toInt(&ok,10);
-                            ram[lc]=convertNumber;
-                        }
-                        else
-                        {
-                            ui->console->setText("error in line:"+QString::number(i+1)+"\n You need valid number after DEC. \n");
-                            compiled=0;
-                            break;
-                        }
-                    }
-                    //ui->console->setText("test label:"+QString::number(allDatas["test,"])+"\n");
-                    //lc++;
-                    //continue;
+                        //ui->in_line->setText(QString::number(riz.size()));
+
+                }
+                if(riz.at(0)=="DEC")
+                {
+
+                }
+                else if(riz.at(0)=="HEX")
+                {
+
                 }
                 ///////////////////////////////////////////////////////////////////////////////////////////////
 
                 //orginal commands
                 else if(riz.at(0)=="AND")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
-                        compiled=0;
-                        break;
+                    //t3
 
-                    }
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
                         for (int bitC=0;bitC<12;bitC++)
@@ -963,8 +994,15 @@ void MainWindow::on_run_btn_clicked()
                     }
                     else
                     {
-                        ram[lc]=0x0000+firstallDatas[riz.at(1)];
+
                     }
+
+                    //t4
+                    DR=ram[AR.to_ulong()];
+                    //t5
+                    SC=0;
+                    logicUnitAND();
+
 
                 }
 
@@ -972,16 +1010,8 @@ void MainWindow::on_run_btn_clicked()
 
                 else if(riz.at(0)=="ADD")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
-                        compiled=0;
-                        break;
+                    //t3
 
-                    }
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
                         for (int bitC=0;bitC<12;bitC++)
@@ -992,8 +1022,17 @@ void MainWindow::on_run_btn_clicked()
                     }
                     else
                     {
-                        ram[lc]=0x1000+firstallDatas[riz.at(1)];
+
                     }
+
+                    //t4
+                    DR=ram[AR.to_ulong()];
+                    //t5
+                    SC=0;
+                    arithmeticUnitADD();
+
+
+
 
                 }
 
@@ -1002,16 +1041,8 @@ void MainWindow::on_run_btn_clicked()
 
                 else if(riz.at(0)=="LDA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
-                        compiled=0;
-                        break;
+                    //t3
 
-                    }
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
                         for (int bitC=0;bitC<12;bitC++)
@@ -1022,8 +1053,16 @@ void MainWindow::on_run_btn_clicked()
                     }
                     else
                     {
-                        ram[lc]=0x2000+firstallDatas[riz.at(1)];
+
                     }
+
+                    //T4
+                    DR=ram[AR.to_ulong()];
+                    //t5
+                    SC=0;
+                    AC=DR;
+
+
 
                 }
 
@@ -1031,18 +1070,11 @@ void MainWindow::on_run_btn_clicked()
 
                 else if(riz.at(0)=="STA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
-                        compiled=0;
-                        break;
+                    //t3
 
-                    }
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
+
                         for (int bitC=0;bitC<12;bitC++)
                         {
                             AR[bitC]=ram[AR.to_ulong()][bitC];
@@ -1051,23 +1083,23 @@ void MainWindow::on_run_btn_clicked()
                     }
                     else
                     {
-                        ram[lc]=0x3000+firstallDatas[riz.at(1)];
+
                     }
+
+                    //t4
+                    SC=0;
+                    ram[AR.to_ulong()]=AC;
+                    QTableWidgetItem *empty = new QTableWidgetItem();
+                    empty->setText("");
+                    ui->ram_tb->setItem(firstallDatas[riz.at(1)],2,empty);
+                    //ui->in_line->setText(QString::number(lc));
 
                 }
 
                 else if(riz.at(0)=="BUN")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
-                        compiled=0;
-                        break;
+                    //t3
 
-                    }
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
                         for (int bitC=0;bitC<12;bitC++)
@@ -1078,8 +1110,13 @@ void MainWindow::on_run_btn_clicked()
                     }
                     else
                     {
-                        ram[lc]=0x4000+firstallDatas[riz.at(1)];
+
                     }
+
+                    //t4
+                    SC=0;
+                    PC=AR;
+                    lc=PC.to_ulong();
 
                 }
 
@@ -1088,16 +1125,8 @@ void MainWindow::on_run_btn_clicked()
 
                 else if(riz.at(0)=="BSA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line:"+QString::number(i+1)+"there is no label by name"+riz.at(1));
-                        compiled=0;
-                        break;
+                    //t3
 
-                    }
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
                         for (int bitC=0;bitC<12;bitC++)
@@ -1108,24 +1137,28 @@ void MainWindow::on_run_btn_clicked()
                     }
                     else
                     {
-                        ram[lc]=0x5000+firstallDatas[riz.at(1)];
+
                     }
+
+                    //t4
+                    inrAR();
+                    for (int bitC=0;bitC<12;bitC++)
+                    {
+                        ram[AR.to_ulong()][bitC]=PC[bitC];
+
+                    }
+                    //T5
+                    SC=0;
+                    PC=AR;
+                    lc=PC.to_ulong();
 
                 }
 
 
                 else if(riz.at(0)=="ISZ")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    if(firstallDatas[riz.at(1)]==0)
-                    {
-                        ui->console->setText("Error in line: "+QString::number(i+1)+"there is no label by name "+riz.at(1));
-                        compiled=0;
-                        break;
+                    //t3
 
-                    }
                     if(riz.size()>=3 && riz.at(2)=='I')
                     {
                         for (int bitC=0;bitC<12;bitC++)
@@ -1134,141 +1167,162 @@ void MainWindow::on_run_btn_clicked()
 
                         }
                     }
-                    else
+
+                    //t4
+                    DR=ram[AR.to_ulong()];
+                    //t5
+                    inrDR();
+                    //t6
+                    SC=0;
+                    ram[AR.to_ulong()]=DR;
+                    if(DR.to_ulong()==0)
                     {
-                        ram[lc]=0x6000+firstallDatas[riz.at(1)];
+                        inrPC();
                     }
 
+
                 }
+
+                //////////////////////////////////////////////////////////////////
 
 
                 else if(riz.at(0)=="INP")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0xf800;
+                    SC=0;
+                    bool ok=1;
+                    INPR=ui->in_line->text().toInt(&ok,16);
+                    for (int bitC=0;bitC<8;bitC++)
+                    {
+                        AC[bitC]=INPR[bitC];
+
+                    }
+                    FGI=0;
+
+
                 }
 
                 else if(riz.at(0)=="OUT")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0xf400;
+                    SC=0;
+                    for (int bitC=0;bitC<8;bitC++)
+                    {
+                        OUTR[bitC]=AC[bitC];
+
+                    }
+                    FGO=0;
+
                 }
                 else if(riz.at(0)=="SKI")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0xf200;
+                    SC=0;
+                    if(FGI==1)
+                    {
+                        inrPC();
+                    }
                 }
                 else if(riz.at(0)=="SKO")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0xf100;
+                    SC=0;
+                    if(FGO==1)
+                    {
+                        inrPC();
+                    }
                 }
                 else if(riz.at(0)=="ION")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0xf080;
+                    SC=0;
+                    IEN=1;
                 }
                 else if(riz.at(0)=="IOF")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0xf040;
+                    SC=0;
+                    IEN=0;
                 }
+
+                ////////////////////////////////////////////////////////////////////////////////
                 else if(riz.at(0)=="CLA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7800;
+                    SC=0;
+                    AC=0;
                 }
 
                 else if(riz.at(0)=="CLE")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7400;
+                    SC=0;
+                    E=0;
                 }
                 else if(riz.at(0)=="CMA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7200;
+                    SC=0;
+                    AC.flip();
                 }
                 else if(riz.at(0)=="CME")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7100;
+                    SC=0;
+                    E.flip();
                 }
                 else if(riz.at(0)=="CIR")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7080;
+                   SC=0;
+                   arithmeticUnitCIR();
+
                 }
                 else if(riz.at(0)=="CIL")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7040;
+                    SC=0;
+                    arithmeticUnitCIL();
                 }
                 else if(riz.at(0)=="INC")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7020;
+                    SC=0;
+                    inrAC();
                 }
                 else if(riz.at(0)=="SPA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7010;
+                    SC=0;
+                    if(AC[15]==0)
+                    {
+                        inrPC();
+                        lc++;
+                    }
                 }
                 else if(riz.at(0)=="SNA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7008;
+                    SC=0;
+                    if(AC[15]==1)
+                    {
+                        inrPC();
+                        lc++;
+                    }
                 }
                 else if(riz.at(0)=="SZA")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7004;
+                    SC=0;
+                    if(AC.to_ulong()==0)
+                    {
+                        inrPC();
+                        lc++;
+                    }
                 }
                 else if(riz.at(0)=="SZE")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7002;
+                    SC=0;
+                    if(E.to_ulong()==0)
+                    {
+                        inrPC();
+                        lc++;
+                    }
                 }
                 else if(riz.at(0)=="HLT")
                 {
-                    QTableWidgetItem *itmintraction = new QTableWidgetItem();
-                    itmintraction->setText(commands.at(i));
-                    ui->ram_tb->setItem(lc,2,itmintraction);
-                    ram[lc]=0x7001;
+                    SC=0;
+                    S=0;
+                    ui->console->setText("program run successfully! \n");
+                    printReg();
+                    printTable();
+                    ui->run_btn->setEnabled(false);
+                    ui->next_btn->setEnabled(false);
+                    return;
                 }
 
 
@@ -1290,24 +1344,21 @@ void MainWindow::on_run_btn_clicked()
                 ///////////////////////////////////////////////////////////////////////////////////////////////
                 else if(riz.at(0)=="END")
                 {
-
+                    printReg();
                     printTable();
-                    if(compiled)
-                    {
-                        ui->console->setText("Compiled Successfully!\n");
-                    }
-                    else
-                    {
-                        ui->console->append("\nERROR IN COMPILING!\n");
-                    }
-                    break;
+                    ui->console->setText("program run successfully! \n");
+                    ui->run_btn->setEnabled(false);
+                    ui->next_btn->setEnabled(false);
+                    return;
                 }
                 else
                 {
-                    //bad command
-                    ui->console->setText("error in line:"+QString::number(i+1)+"\n Bad Command. \n");
-                    compiled=0;
-                    break;
+                    printReg();
+                    printTable();
+                    ui->console->setText("Error in running program!\n");
+                    ui->run_btn->setEnabled(false);
+                    ui->next_btn->setEnabled(false);
+                    return;
                 }
 
 
@@ -1321,29 +1372,9 @@ void MainWindow::on_run_btn_clicked()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //else end
     }
-
+//end of running progress
 }
 
 
@@ -1378,8 +1409,694 @@ void MainWindow::on_next_btn_clicked()
     {
         ui->console->setText("\n You should compile your program first!\n");
     }
+
     else
     {
+        ui->ram_tb->selectRow(memorystep-1);
 
-    }
+        ui->console->setText("");
+
+
+                SC=clk;
+
+                    QStringList riz = commands.at(lineStep).split(' ', QString::SkipEmptyParts);
+
+
+                    //each words
+                    if(riz.at(0)=="//" || riz.at(0)[0]=='/')
+                    {
+                       lineStep++;
+
+
+                    }
+                    else if(riz.at(0)=="ORG")
+                    {
+
+                            bool ok=1;
+                            memorystep=riz.at(1).toInt(&ok,16);
+                            lineStep++;
+
+                    }
+
+                    riz = commands.at(lineStep).split(' ', QString::SkipEmptyParts);
+
+
+
+
+                    //// FETCH /////
+                    //t0
+                    if(clk==0)
+                    {
+                        S=1;
+                        PC=memorystep;
+                        AR=PC;
+                        clk++;
+                        SC=clk;
+                        printReg();
+                        printTable();
+                        ui->operation->setText("T0 (FETCH): AR <- PC ");
+                        return;
+                    }
+
+                    //t1
+                    else if(clk==1)
+                    {
+                        inrPC();
+                        memorystep++;
+                        IR=ram[AR.to_ulong()];
+                        clk++;
+                        SC=clk;
+                        printReg();
+                        printTable();
+                        ui->operation->setText("T1 (FETCH):PC <- PC+1  , IR <- M[AR] ");
+                        return;
+                    }
+
+                    //t2
+                    else if(clk==2)
+                    {
+                        for (int bitC=0;bitC<12;bitC++)
+                        {
+                            AR[bitC]=IR[bitC];
+
+                        }
+                        I[0]=IR[15];
+                        clk++;
+                        ui->operation->setText("T2 (DECODE):AR <- IR(0-11) , I <- IR(15) ");
+                        return;
+                    }
+
+
+
+
+                    //lc++;
+                    ///////////////////////////////////////////////////////////////////
+
+
+                    if(riz.at(0)[riz.at(0).size()-1]==',')
+                    {
+
+                            for(int x=0;x<(riz.length())-1;x++)
+                            {
+                                riz[x]=riz[x+1];
+                            }
+
+
+                    }
+                    if(riz.at(0)=="DEC")
+                    {
+                        clk=0;
+                        lineStep++;
+
+                    }
+                    else if(riz.at(0)=="HEX")
+                    {
+                        clk=0;
+                        lineStep++;
+
+                    }
+                    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+                    //orginal commands
+                    else if(riz.at(0)=="AND")
+                    {
+                        //t3
+                        if(clk==3)
+                        {
+
+                            clk++;
+                            if(riz.size()>=3 && riz.at(2)=='I')
+                            {
+                                ui->operation->setText("AR <- M[AR] ");
+                                for (int bitC=0;bitC<12;bitC++)
+                                {
+                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+
+                                }
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+
+
+                        //t4
+                        else if (clk==4) {
+                            ui->operation->setText("DR <- M[AR]");
+                            clk++;
+                            DR=ram[AR.to_ulong()];
+                        }
+
+                        //t5
+                        else if (clk==5) {
+                            clk=0;
+                            SC=0;
+                            lineStep++;
+                            logicUnitAND();
+                            ui->operation->setText("AC <- AC^DR  , SC <- 0");
+                        }
+
+
+
+                    }
+
+
+
+                    else if(riz.at(0)=="ADD")
+                    {
+                        //t3
+                        if(clk==3)
+                        {
+                            clk++;
+                            if(riz.size()>=3 && riz.at(2)=='I')
+                            {
+                                ui->operation->setText("AR <- M[AR] ");
+                                for (int bitC=0;bitC<12;bitC++)
+                                {
+                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+
+                                }
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+
+                        //t4
+                        if(clk==4)
+                        {
+                            clk++;
+                            DR=ram[AR.to_ulong()];
+                            ui->operation->setText("DR <- M[AR]");
+
+                        }
+
+                        //t5
+                        if(clk==5)
+                        {
+                            clk=0;
+                            lineStep++;
+                            SC=0;
+                            arithmeticUnitADD();
+                            ui->operation->setText(" AC <- AC+DR , E<-COUT , SC <- 0");
+
+                        }
+
+
+
+
+                    }
+
+
+
+
+                    else if(riz.at(0)=="LDA")
+                    {
+                        //t3
+                        if(clk==3)
+                        {
+                            clk++;
+                            if(riz.size()>=3 && riz.at(2)=='I')
+                            {
+                                ui->operation->setText("AR <- M[AR] ");
+                                for (int bitC=0;bitC<12;bitC++)
+                                {
+                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+
+                                }
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+
+                        //T4
+                        else if(clk==4)
+                        {
+                            clk++;
+                            DR=ram[AR.to_ulong()];
+                            ui->operation->setText("DR <- M[AR]");
+
+                        }
+
+
+                        //t5
+                        else if (clk==5) {
+                            SC=0;
+                            clk=0;
+                            lineStep++;
+                            AC=DR;
+                            ui->operation->setText("AC <- DR , SC <- 0");
+
+                        }
+
+
+
+                    }
+
+
+
+                    else if(riz.at(0)=="STA")
+                    {
+                        if(clk==3)
+                        {
+                            clk++;
+                            if(riz.size()>=3 && riz.at(2)=='I')
+                            {
+                                ui->operation->setText("AR <- M[AR] ");
+                                for (int bitC=0;bitC<12;bitC++)
+                                {
+                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+
+                                }
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        //t4
+                        else if(clk==4)
+                        {
+                            ui->operation->setText("M[AR] <- AC , SC <- 0");
+                            SC=0;
+                            lineStep++;
+                            clk=0;
+                            ram[AR.to_ulong()]=AC;
+                            QTableWidgetItem *empty = new QTableWidgetItem();
+                            empty->setText("");
+                            ui->ram_tb->setItem(firstallDatas[riz.at(1)],2,empty);
+                        }
+
+                        //ui->in_line->setText(QString::number(lc));
+
+                    }
+
+                    else if(riz.at(0)=="BUN")
+                    {
+                        if(clk==3)
+                        {
+                            clk++;
+                            if(riz.size()>=3 && riz.at(2)=='I')
+                            {
+                                ui->operation->setText("AR <- M[AR] ");
+                                for (int bitC=0;bitC<12;bitC++)
+                                {
+                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+
+                                }
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+
+                        //t4
+                        else if(clk==4)
+                        {
+                            ui->operation->setText("PC <- AR , SC <- 0");
+                            SC=0;
+                            clk=0;
+                            lineStep++;
+                            PC=AR;
+                            memorystep=PC.to_ulong();
+
+                        }
+
+                    }
+
+
+
+
+                    else if(riz.at(0)=="BSA")
+                    {
+                        if(clk==3)
+                        {
+                            clk++;
+                            if(riz.size()>=3 && riz.at(2)=='I')
+                            {
+                                ui->operation->setText("AR <- M[AR] ");
+                                for (int bitC=0;bitC<12;bitC++)
+                                {
+                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+
+                                }
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        //t4
+                        else if(clk==4)
+                        {
+                            ui->operation->setText("M[AR] <- PC , AR <- AR+1");
+                            clk++;
+                            inrAR();
+                            for (int bitC=0;bitC<12;bitC++)
+                            {
+                                ram[AR.to_ulong()][bitC]=PC[bitC];
+
+                            }
+                        }
+
+
+                        //T5
+                        else if(clk==5)
+                        {
+                            clk=0;
+                            lineStep++;
+                            SC=0;
+                            PC=AR;
+                            memorystep=PC.to_ulong();
+                            ui->operation->setText("PC <- AR , SC <- 0");
+
+                        }
+
+
+                    }
+
+
+                    else if(riz.at(0)=="ISZ")
+                    {
+                        if(clk==3)
+                        {
+
+                            clk++;
+                            if(riz.size()>=3 && riz.at(2)=='I')
+                            {
+                                ui->operation->setText("AR <- M[AR] ");
+                                for (int bitC=0;bitC<12;bitC++)
+                                {
+                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+
+                                }
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        //t4
+                        else if(clk==4)
+                        {
+                            ui->operation->setText("DR <- M[AR]");
+                            clk++;
+                            DR=ram[AR.to_ulong()];
+
+                        }
+
+                        //t5
+                        else if(clk==5)
+                        {
+                            ui->operation->setText("DR <- DR+1");
+                            clk++;
+                            inrDR();
+                        }
+
+                        //t6
+                        else if(clk==6)
+                        {
+                            SC=0;
+                            clk=0;
+                            lineStep++;
+                            ram[AR.to_ulong()]=DR;
+                            ui->operation->setText("M[AR] <- DR, SC <- 0");
+                            if(DR.to_ulong()==0)
+                            {
+                                inrPC();
+                                ui->operation->setText("PC <- PC+1 , M[AR] <- DR, SC <- 0");
+                            }
+
+
+                        }
+
+
+                    }
+
+                    //////////////////////////////////////////////////////////////////
+
+
+                    else if(riz.at(0)=="INP")
+                    {
+
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        bool ok=1;
+                        INPR=ui->in_line->text().toInt(&ok,16);
+                        for (int bitC=0;bitC<8;bitC++)
+                        {
+                            AC[bitC]=INPR[bitC];
+
+                        }
+                        FGI=0;
+                        ui->operation->setText("AC(0-7) <- INPR , FGI <- 0 , SC <- 0");
+
+
+                    }
+
+                    else if(riz.at(0)=="OUT")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        for (int bitC=0;bitC<8;bitC++)
+                        {
+                            OUTR[bitC]=AC[bitC];
+
+                        }
+                        FGO=0;
+                        ui->operation->setText("OUTR <- AC(0-7), FGO <- 0 , SC <- 0");
+
+                    }
+                    else if(riz.at(0)=="SKI")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        ui->operation->setText("SC <- 0");
+                        if(FGI==1)
+                        {
+                            inrPC();
+                            ui->operation->setText("PC <- PC+1 , SC <- 0");
+                        }
+                    }
+                    else if(riz.at(0)=="SKO")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        ui->operation->setText("SC <- 0");
+                        if(FGO==1)
+                        {
+                            inrPC();
+                            ui->operation->setText("PC <- PC+1 , SC <- 0");
+                        }
+                    }
+                    else if(riz.at(0)=="ION")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        IEN=1;
+                        ui->operation->setText("IEN <- 1 , SC <- 0");
+                    }
+                    else if(riz.at(0)=="IOF")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        IEN=0;
+                        ui->operation->setText("IEN <- 0 , SC <- 0");
+                    }
+
+                    ////////////////////////////////////////////////////////////////////////////////
+                    else if(riz.at(0)=="CLA")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        AC=0;
+                        ui->operation->setText("AC <- 0  , SC <- 0 ");
+                    }
+
+                    else if(riz.at(0)=="CLE")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        E=0;
+                        ui->operation->setText("E <- 0  , SC <- 0 ");
+                    }
+                    else if(riz.at(0)=="CMA")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        AC.flip();
+                        ui->operation->setText("AC <- ~AC  , SC <- 0 ");
+                    }
+                    else if(riz.at(0)=="CME")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        E.flip();
+                        ui->operation->setText("E <- ~E  , SC <- 0 ");
+                    }
+                    else if(riz.at(0)=="CIR")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                       arithmeticUnitCIR();
+                       ui->operation->setText("AC <- shr  , AC(15)<-E , E <- AC(0) ");
+
+                    }
+                    else if(riz.at(0)=="CIL")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        arithmeticUnitCIL();
+                        ui->operation->setText("AC <- shl  , AC(0)<-E , E <- AC(15) ");
+
+                    }
+                    else if(riz.at(0)=="INC")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        inrAC();
+                        ui->operation->setText("AC <- AC+1  , SC <- 0 ");
+                    }
+                    else if(riz.at(0)=="SPA")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        ui->operation->setText("SC <- 0 ");
+                        if(AC[15]==0)
+                        {
+                            ui->operation->setText("PC <- PC+1  , SC <- 0 ");
+                            inrPC();
+                            memorystep++;
+                        }
+                    }
+                    else if(riz.at(0)=="SNA")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        ui->operation->setText("SC <- 0 ");
+                        if(AC[15]==1)
+                        {
+                            inrPC();
+                            memorystep++;
+                            ui->operation->setText("PC <- PC+1  , SC <- 0 ");
+                        }
+                    }
+                    else if(riz.at(0)=="SZA")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        ui->operation->setText("SC <- 0 ");
+                        if(AC.to_ulong()==0)
+                        {
+                            inrPC();
+                            memorystep++;
+                            ui->operation->setText("PC <- PC+1  , SC <- 0 ");
+                        }
+                    }
+                    else if(riz.at(0)=="SZE")
+                    {
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        ui->operation->setText("SC <- 0 ");
+                        if(E.to_ulong()==0)
+                        {
+                            inrPC();
+                            memorystep++;
+                            ui->operation->setText("PC <- PC+1  , SC <- 0 ");
+                        }
+                    }
+                    else if(riz.at(0)=="HLT")
+                    {
+                        S=0;
+                        SC=0;
+                        clk=0;
+                        lineStep++;
+                        ui->run_btn->setEnabled(false);
+                        ui->next_btn->setEnabled(false);
+                        ui->operation->setText("S <- 0");
+
+                        ui->console->setText("program run successfully! \n");
+                        printReg();
+                        printTable();
+                        return;
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    ///////////////////////////////////////////////////////////////////////////////////////////////
+                    else if(riz.at(0)=="END")
+                    {
+                        clk=0;
+                        lineStep++;
+                        printReg();
+                        printTable();
+                        ui->console->setText("program run successfully! \n");
+                        ui->run_btn->setEnabled(false);
+                        ui->next_btn->setEnabled(false);
+                        return;
+                    }
+                    else
+                    {
+                        clk=0;
+                        lineStep++;
+                        printReg();
+                        printTable();
+                        ui->console->setText("Error in running program!\n");
+                        ui->run_btn->setEnabled(false);
+                        ui->next_btn->setEnabled(false);
+                        return;
+                    }
+
+
+
+
+
+
+            printReg();
+            printTable();
+    //else end
+        }
 }

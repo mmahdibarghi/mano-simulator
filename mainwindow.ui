@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1349</width>
+    <width>1387</width>
     <height>560</height>
    </rect>
   </property>
@@ -20,7 +20,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_13">
+   <layout class="QHBoxLayout" name="horizontalLayout_16">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="sizeConstraint">
@@ -125,13 +125,7 @@
      </layout>
     </item>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_5"/>
-      </item>
+     <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <property name="bottomMargin">
@@ -151,6 +145,9 @@
             <width>5</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -185,6 +182,9 @@
           <property name="text">
            <string/>
           </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
        </layout>
@@ -202,7 +202,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="ar_line"/>
+         <widget class="QLineEdit" name="ar_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_3">
@@ -225,7 +229,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="ir_line"/>
+         <widget class="QLineEdit" name="ir_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -242,7 +250,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="dr_line"/>
+         <widget class="QLineEdit" name="dr_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_4">
@@ -265,7 +277,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="ac_line"/>
+         <widget class="QLineEdit" name="ac_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -282,7 +298,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="tr_line"/>
+         <widget class="QLineEdit" name="tr_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_5">
@@ -305,15 +325,12 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="inpr_line"/>
+         <widget class="QLineEdit" name="inpr_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_10">
-        <property name="bottomMargin">
-         <number>10</number>
-        </property>
         <item>
          <widget class="QLabel" name="label_9">
           <property name="text">
@@ -322,7 +339,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="outr_line"/>
+         <widget class="QLineEdit" name="outr_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -339,7 +360,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="i_line"/>
+         <widget class="QLineEdit" name="i_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_6">
@@ -362,7 +387,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="s_line"/>
+         <widget class="QLineEdit" name="s_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_7">
@@ -385,7 +414,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="e_line"/>
+         <widget class="QLineEdit" name="e_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_8">
@@ -408,7 +441,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="r_line"/>
+         <widget class="QLineEdit" name="r_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -425,7 +462,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="ien_line"/>
+         <widget class="QLineEdit" name="ien_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_9">
@@ -448,7 +489,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="fgi_line"/>
+         <widget class="QLineEdit" name="fgi_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_10">
@@ -471,7 +516,31 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="fgo_line"/>
+         <widget class="QLineEdit" name="fgo_line">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_14">
+        <property name="topMargin">
+         <number>10</number>
+        </property>
+        <property name="bottomMargin">
+         <number>10</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="input_lbl">
+          <property name="text">
+           <string>input</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="in_line"/>
         </item>
        </layout>
       </item>
@@ -508,14 +577,32 @@
        </layout>
       </item>
       <item>
-       <widget class="QLabel" name="test">
-        <property name="text">
-         <string>console:</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_15">
+        <item>
+         <widget class="QLabel" name="label_18">
+          <property name="text">
+           <string>Microoperation: </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="operation"/>
+        </item>
+       </layout>
       </item>
       <item>
-       <widget class="QTextBrowser" name="console"/>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QLabel" name="test">
+          <property name="text">
+           <string>console:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextBrowser" name="console"/>
+        </item>
+       </layout>
       </item>
      </layout>
     </item>
@@ -549,10 +636,13 @@
          <bool>false</bool>
         </property>
         <property name="alternatingRowColors">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="selectionMode">
-         <enum>QAbstractItemView::NoSelection</enum>
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
         </property>
         <property name="showGrid">
          <bool>true</bool>
@@ -600,8 +690,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1349</width>
-     <height>21</height>
+     <width>1387</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

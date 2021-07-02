@@ -114,6 +114,10 @@ private:
     map<QString,int> allDatas;
     map<QString,int> firstallDatas;
     QStringList commands;
+    int tcommmands;
+    int clk;
+    int lineStep;
+    int memorystep;
 
 
     int reseter=1;
