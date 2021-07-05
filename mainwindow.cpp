@@ -1699,3 +1699,20 @@ void MainWindow::on_next_btn_clicked()
     //else end
         }
 }
+
+void MainWindow::on_actioncompile_program_triggered()
+{
+    on_compile_btn_clicked();
+}
+
+void MainWindow::on_actionRun_Program_triggered()
+{
+    on_run_btn_clicked();
+}
+
+void MainWindow::on_actionAbout_Mano_simulator_triggered()
+{
+    QMessageBox msgBox;
+    msgBox.setText("🖥️ An assembler and hardware simulator for the Mano Basic Computer, a 16 bit computer.\n Programming By: Mohammad Mahdi Barghi \n GitHub link 🔗: https://github.com/mmahdibarghi/mano-simulator");
+    msgBox.exec();
+}

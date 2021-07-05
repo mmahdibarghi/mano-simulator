@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1387</width>
-    <height>560</height>
+    <width>1397</width>
+    <height>817</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Mano simulator</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_16">
@@ -614,6 +614,11 @@
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
        <widget class="QLabel" name="label_17">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>RAM:</string>
         </property>
@@ -694,7 +699,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1387</width>
+     <width>1397</width>
      <height>26</height>
     </rect>
    </property>
@@ -708,7 +713,22 @@
     <addaction name="action_New"/>
     <addaction name="action_Exit"/>
    </widget>
+   <widget class="QMenu" name="menuAssemble">
+    <property name="title">
+     <string>Assemble</string>
+    </property>
+    <addaction name="actioncompile_program"/>
+    <addaction name="actionRun_Program"/>
+   </widget>
+   <widget class="QMenu" name="menuhelp">
+    <property name="title">
+     <string>help</string>
+    </property>
+    <addaction name="actionAbout_Mano_simulator"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menuAssemble"/>
+   <addaction name="menuhelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_Save">
@@ -766,6 +786,27 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actioncompile_program">
+   <property name="text">
+    <string>Compile program</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="actionRun_Program">
+   <property name="text">
+    <string>Run Program</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionAbout_Mano_simulator">
+   <property name="text">
+    <string>About Mano simulator</string>
    </property>
   </action>
  </widget>

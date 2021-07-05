@@ -91,6 +91,12 @@ private slots:
 
     void on_next_btn_clicked();
 
+    void on_actioncompile_program_triggered();
+
+    void on_actionRun_Program_triggered();
+
+    void on_actionAbout_Mano_simulator_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString issaved="";

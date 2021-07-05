@@ -43,3 +43,5 @@ DISTFILES += \
     openicon.png \
     saveasicon.png \
     saveicon.png
+win32:RC_ICONS += laptop.ico
+
