@@ -6,6 +6,7 @@
 #include<QMessageBox>
 #include<sstream>
 #include <ctype.h>
+#include<QtDebug>
 using namespace std;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -249,6 +250,7 @@ void MainWindow::on_openbtn_clicked()
             infile.getline(tmp,300);
             ui->editor->insertPlainText(QString::fromStdString(tmp));
             ui->editor->insertPlainText("\n");
+            on_reset_btn_clicked();
 
         }
 
@@ -261,17 +263,20 @@ void MainWindow::on_openbtn_clicked()
 void MainWindow::on_action_Open_triggered()
 {
     on_openbtn_clicked();
+    on_reset_btn_clicked();
 }
 
 void MainWindow::on_action_New_triggered()
 {
     ui->editor->clear();
     issaved="";
+    on_reset_btn_clicked();
 }
 
 void MainWindow::on_newbtn_clicked()
 {
     on_action_New_triggered();
+    on_reset_btn_clicked();
 }
 
 void MainWindow::on_reset_btn_clicked()
@@ -304,8 +309,12 @@ void MainWindow::on_reset_btn_clicked()
     clk=0;
     lineStep=0;
     memorystep=0;
+    run=0;
+    printing=1;
     ui->run_btn->setEnabled(true);
     ui->next_btn->setEnabled(true);
+    ui->in_line->setText("");
+    ui->operation->setText("");
 
 
 
@@ -898,483 +907,23 @@ void MainWindow::on_compile_btn_clicked()
 
 void MainWindow::on_run_btn_clicked()
 {
-    S=1;
     if(!compiled)
     {
-        ui->console->setText("\n ERROR: First,Please compile your program!\n");
+        ui->console->setText("\n You should compile your program first!\n");
     }
+
     else
     {
-        int lc=0;
-        ui->console->setText("");
-
-
-
-
-        for(int i=0;i<tcommmands;i++)
+        S=1;
+        printing=0;
+        run=1;
+        while ((S.to_ulong()))
         {
-
-            QStringList riz = commands.at(i).split(' ', QString::SkipEmptyParts);
-    //        int tparts=commands.size();
-
-                //each words
-                if(riz.at(0)=="//" || riz.at(0)[0]=='/')
-                {
-                    //comment
-                    //ui->console->setText("comment in line:"+QString::number(i+1)+"\n");
-                    continue;
-                }
-                else if(riz.at(0)=="ORG")
-                {
-                        bool ok=1;
-                        lc=riz.at(1).toInt(&ok,16);
-                        continue;
-                }
-
-
-
-
-                //// FETCH /////
-                //t0
-                PC=lc;
-                AR=PC;
-                //t1
-                SC=1;
-
-                inrPC();
-                lc++;
-                IR=ram[AR.to_ulong()];
-                //t2
-                for (int bitC=0;bitC<12;bitC++)
-                {
-                    AR[bitC]=IR[bitC];
-
-                }
-                I[0]=IR[15];
-
-
-
-                //lc++;
-                ///////////////////////////////////////////////////////////////////
-
-
-                if(riz.at(0)[riz.at(0).size()-1]==',')
-                {
-
-                        for(int x=0;x<(riz.length())-1;x++)
-                        {
-                            riz[x]=riz[x+1];
-                        }
-                        //ui->in_line->setText(QString::number(riz.size()));
-
-                }
-                if(riz.at(0)=="DEC")
-                {
-
-                }
-                else if(riz.at(0)=="HEX")
-                {
-
-                }
-                ///////////////////////////////////////////////////////////////////////////////////////////////
-
-                //orginal commands
-                else if(riz.at(0)=="AND")
-                {
-                    //t3
-
-                    if(riz.size()>=3 && riz.at(2)=='I')
-                    {
-                        for (int bitC=0;bitC<12;bitC++)
-                        {
-                            AR[bitC]=ram[AR.to_ulong()][bitC];
-
-                        }
-
-                    }
-                    else
-                    {
-
-                    }
-
-                    //t4
-                    DR=ram[AR.to_ulong()];
-                    //t5
-                    SC=0;
-                    logicUnitAND();
-
-
-                }
-
-
-
-                else if(riz.at(0)=="ADD")
-                {
-                    //t3
-
-                    if(riz.size()>=3 && riz.at(2)=='I')
-                    {
-                        for (int bitC=0;bitC<12;bitC++)
-                        {
-                            AR[bitC]=ram[AR.to_ulong()][bitC];
-
-                        }
-                    }
-                    else
-                    {
-
-                    }
-
-                    //t4
-                    DR=ram[AR.to_ulong()];
-                    //t5
-                    SC=0;
-                    arithmeticUnitADD();
-
-
-
-
-                }
-
-
-
-
-                else if(riz.at(0)=="LDA")
-                {
-                    //t3
-
-                    if(riz.size()>=3 && riz.at(2)=='I')
-                    {
-                        for (int bitC=0;bitC<12;bitC++)
-                        {
-                            AR[bitC]=ram[AR.to_ulong()][bitC];
-
-                        }
-                    }
-                    else
-                    {
-
-                    }
-
-                    //T4
-                    DR=ram[AR.to_ulong()];
-                    //t5
-                    SC=0;
-                    AC=DR;
-
-
-
-                }
-
-
-
-                else if(riz.at(0)=="STA")
-                {
-                    //t3
-
-                    if(riz.size()>=3 && riz.at(2)=='I')
-                    {
-
-                        for (int bitC=0;bitC<12;bitC++)
-                        {
-                            AR[bitC]=ram[AR.to_ulong()][bitC];
-
-                        }
-                    }
-                    else
-                    {
-
-                    }
-
-                    //t4
-                    SC=0;
-                    ram[AR.to_ulong()]=AC;
-                    QTableWidgetItem *empty = new QTableWidgetItem();
-                    empty->setText("");
-                    ui->ram_tb->setItem(firstallDatas[riz.at(1)],2,empty);
-                    //ui->in_line->setText(QString::number(lc));
-
-                }
-
-                else if(riz.at(0)=="BUN")
-                {
-                    //t3
-
-                    if(riz.size()>=3 && riz.at(2)=='I')
-                    {
-                        for (int bitC=0;bitC<12;bitC++)
-                        {
-                            AR[bitC]=ram[AR.to_ulong()][bitC];
-
-                        }
-                    }
-                    else
-                    {
-
-                    }
-
-                    //t4
-                    SC=0;
-                    PC=AR;
-                    lc=PC.to_ulong();
-
-                }
-
-
-
-
-                else if(riz.at(0)=="BSA")
-                {
-                    //t3
-
-                    if(riz.size()>=3 && riz.at(2)=='I')
-                    {
-                        for (int bitC=0;bitC<12;bitC++)
-                        {
-                            AR[bitC]=ram[AR.to_ulong()][bitC];
-
-                        }
-                    }
-                    else
-                    {
-
-                    }
-
-                    //t4
-                    inrAR();
-                    for (int bitC=0;bitC<12;bitC++)
-                    {
-                        ram[AR.to_ulong()][bitC]=PC[bitC];
-
-                    }
-                    //T5
-                    SC=0;
-                    PC=AR;
-                    lc=PC.to_ulong();
-
-                }
-
-
-                else if(riz.at(0)=="ISZ")
-                {
-                    //t3
-
-                    if(riz.size()>=3 && riz.at(2)=='I')
-                    {
-                        for (int bitC=0;bitC<12;bitC++)
-                        {
-                            AR[bitC]=ram[AR.to_ulong()][bitC];
-
-                        }
-                    }
-
-                    //t4
-                    DR=ram[AR.to_ulong()];
-                    //t5
-                    inrDR();
-                    //t6
-                    SC=0;
-                    ram[AR.to_ulong()]=DR;
-                    if(DR.to_ulong()==0)
-                    {
-                        inrPC();
-                    }
-
-
-                }
-
-                //////////////////////////////////////////////////////////////////
-
-
-                else if(riz.at(0)=="INP")
-                {
-                    SC=0;
-                    bool ok=1;
-                    INPR=ui->in_line->text().toInt(&ok,16);
-                    for (int bitC=0;bitC<8;bitC++)
-                    {
-                        AC[bitC]=INPR[bitC];
-
-                    }
-                    FGI=0;
-
-
-                }
-
-                else if(riz.at(0)=="OUT")
-                {
-                    SC=0;
-                    for (int bitC=0;bitC<8;bitC++)
-                    {
-                        OUTR[bitC]=AC[bitC];
-
-                    }
-                    FGO=0;
-
-                }
-                else if(riz.at(0)=="SKI")
-                {
-                    SC=0;
-                    if(FGI==1)
-                    {
-                        inrPC();
-                    }
-                }
-                else if(riz.at(0)=="SKO")
-                {
-                    SC=0;
-                    if(FGO==1)
-                    {
-                        inrPC();
-                    }
-                }
-                else if(riz.at(0)=="ION")
-                {
-                    SC=0;
-                    IEN=1;
-                }
-                else if(riz.at(0)=="IOF")
-                {
-                    SC=0;
-                    IEN=0;
-                }
-
-                ////////////////////////////////////////////////////////////////////////////////
-                else if(riz.at(0)=="CLA")
-                {
-                    SC=0;
-                    AC=0;
-                }
-
-                else if(riz.at(0)=="CLE")
-                {
-                    SC=0;
-                    E=0;
-                }
-                else if(riz.at(0)=="CMA")
-                {
-                    SC=0;
-                    AC.flip();
-                }
-                else if(riz.at(0)=="CME")
-                {
-                    SC=0;
-                    E.flip();
-                }
-                else if(riz.at(0)=="CIR")
-                {
-                   SC=0;
-                   arithmeticUnitCIR();
-
-                }
-                else if(riz.at(0)=="CIL")
-                {
-                    SC=0;
-                    arithmeticUnitCIL();
-                }
-                else if(riz.at(0)=="INC")
-                {
-                    SC=0;
-                    inrAC();
-                }
-                else if(riz.at(0)=="SPA")
-                {
-                    SC=0;
-                    if(AC[15]==0)
-                    {
-                        inrPC();
-                        lc++;
-                    }
-                }
-                else if(riz.at(0)=="SNA")
-                {
-                    SC=0;
-                    if(AC[15]==1)
-                    {
-                        inrPC();
-                        lc++;
-                    }
-                }
-                else if(riz.at(0)=="SZA")
-                {
-                    SC=0;
-                    if(AC.to_ulong()==0)
-                    {
-                        inrPC();
-                        lc++;
-                    }
-                }
-                else if(riz.at(0)=="SZE")
-                {
-                    SC=0;
-                    if(E.to_ulong()==0)
-                    {
-                        inrPC();
-                        lc++;
-                    }
-                }
-                else if(riz.at(0)=="HLT")
-                {
-                    SC=0;
-                    S=0;
-                    ui->console->setText("program run successfully! \n");
-                    printReg();
-                    printTable();
-                    ui->run_btn->setEnabled(false);
-                    ui->next_btn->setEnabled(false);
-                    return;
-                }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                ///////////////////////////////////////////////////////////////////////////////////////////////
-                else if(riz.at(0)=="END")
-                {
-                    printReg();
-                    printTable();
-                    ui->console->setText("program run successfully! \n");
-                    ui->run_btn->setEnabled(false);
-                    ui->next_btn->setEnabled(false);
-                    return;
-                }
-                else
-                {
-                    printReg();
-                    printTable();
-                    ui->console->setText("Error in running program!\n");
-                    ui->run_btn->setEnabled(false);
-                    ui->next_btn->setEnabled(false);
-                    return;
-                }
-
-
-
-
-            //first for
+            on_next_btn_clicked();
         }
-
-
-
-
-
-
-//else end
+        printReg();
+        printTable();
     }
-//end of running progress
 }
 
 
@@ -1405,6 +954,10 @@ void MainWindow::on_run_btn_clicked()
 
 void MainWindow::on_next_btn_clicked()
 {
+    if(!run)
+    {
+        printing=1;
+    }
     if(!compiled)
     {
         ui->console->setText("\n You should compile your program first!\n");
@@ -1452,8 +1005,12 @@ void MainWindow::on_next_btn_clicked()
                         AR=PC;
                         clk++;
                         SC=clk;
-                        printReg();
-                        printTable();
+                        if(printing)
+                        {
+                            printReg();
+                            printTable();
+                        }
+
                         ui->operation->setText("T0 (FETCH): AR <- PC ");
                         return;
                     }
@@ -1466,8 +1023,11 @@ void MainWindow::on_next_btn_clicked()
                         IR=ram[AR.to_ulong()];
                         clk++;
                         SC=clk;
-                        printReg();
-                        printTable();
+                        if(printing)
+                        {
+                            printReg();
+                            printTable();
+                        }
                         ui->operation->setText("T1 (FETCH):PC <- PC+1  , IR <- M[AR] ");
                         return;
                     }
@@ -1528,9 +1088,10 @@ void MainWindow::on_next_btn_clicked()
                             if(riz.size()>=3 && riz.at(2)=='I')
                             {
                                 ui->operation->setText("AR <- M[AR] ");
+                                bitset<12> tmpAR=AR;
                                 for (int bitC=0;bitC<12;bitC++)
                                 {
-                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+                                    AR[bitC]=ram[tmpAR.to_ulong()][bitC];
 
                                 }
 
@@ -1570,20 +1131,26 @@ void MainWindow::on_next_btn_clicked()
                         if(clk==3)
                         {
                             clk++;
+
                             if(riz.size()>=3 && riz.at(2)=='I')
                             {
+
                                 ui->operation->setText("AR <- M[AR] ");
+                                bitset<12> tmpAR=AR;
                                 for (int bitC=0;bitC<12;bitC++)
                                 {
-                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+                                    AR[bitC]=ram[tmpAR.to_ulong()][bitC];
+
 
                                 }
+
 
                             }
                             else
                             {
 
                             }
+
                         }
 
                         //t4
@@ -1623,9 +1190,10 @@ void MainWindow::on_next_btn_clicked()
                             if(riz.size()>=3 && riz.at(2)=='I')
                             {
                                 ui->operation->setText("AR <- M[AR] ");
+                                bitset<12> tmpAR=AR;
                                 for (int bitC=0;bitC<12;bitC++)
                                 {
-                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+                                    AR[bitC]=ram[tmpAR.to_ulong()][bitC];
 
                                 }
 
@@ -1670,9 +1238,10 @@ void MainWindow::on_next_btn_clicked()
                             if(riz.size()>=3 && riz.at(2)=='I')
                             {
                                 ui->operation->setText("AR <- M[AR] ");
+                                bitset<12> tmpAR=AR;
                                 for (int bitC=0;bitC<12;bitC++)
                                 {
-                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+                                    AR[bitC]=ram[tmpAR.to_ulong()][bitC];
 
                                 }
 
@@ -1707,9 +1276,10 @@ void MainWindow::on_next_btn_clicked()
                             if(riz.size()>=3 && riz.at(2)=='I')
                             {
                                 ui->operation->setText("AR <- M[AR] ");
+                                bitset<12> tmpAR=AR;
                                 for (int bitC=0;bitC<12;bitC++)
                                 {
-                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+                                    AR[bitC]=ram[tmpAR.to_ulong()][bitC];
 
                                 }
 
@@ -1730,7 +1300,7 @@ void MainWindow::on_next_btn_clicked()
                             lineStep=allDatas[riz.at(1)+","]-1;
 
                             lineStep++;
-                            ui->in_line->setText(QString::number(lineStep));
+                            //ui->in_line->setText(QString::number(lineStep));
                             memorystep=PC.to_ulong();
 
                         }
@@ -1748,9 +1318,10 @@ void MainWindow::on_next_btn_clicked()
                             if(riz.size()>=3 && riz.at(2)=='I')
                             {
                                 ui->operation->setText("AR <- M[AR] ");
+                                bitset<12> tmpAR=AR;
                                 for (int bitC=0;bitC<12;bitC++)
                                 {
-                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+                                    AR[bitC]=ram[tmpAR.to_ulong()][bitC];
 
                                 }
 
@@ -1801,9 +1372,10 @@ void MainWindow::on_next_btn_clicked()
                             if(riz.size()>=3 && riz.at(2)=='I')
                             {
                                 ui->operation->setText("AR <- M[AR] ");
+                                bitset<12> tmpAR=AR;
                                 for (int bitC=0;bitC<12;bitC++)
                                 {
-                                    AR[bitC]=ram[AR.to_ulong()][bitC];
+                                    AR[bitC]=ram[tmpAR.to_ulong()][bitC];
 
                                 }
 
@@ -2060,8 +1632,11 @@ void MainWindow::on_next_btn_clicked()
                         ui->operation->setText("S <- 0");
 
                         ui->console->setText("program run successfully! \n");
-                        printReg();
-                        printTable();
+                        if(printing)
+                        {
+                            printReg();
+                            printTable();
+                        }
                         return;
                     }
 
@@ -2086,8 +1661,11 @@ void MainWindow::on_next_btn_clicked()
                     {
                         clk=0;
                         lineStep++;
-                        printReg();
-                        printTable();
+                        if(printing)
+                        {
+                            printReg();
+                            printTable();
+                        }
                         ui->console->setText("program run successfully! \n");
                         ui->run_btn->setEnabled(false);
                         ui->next_btn->setEnabled(false);
@@ -2097,8 +1675,11 @@ void MainWindow::on_next_btn_clicked()
                     {
                         clk=0;
                         lineStep++;
-                        printReg();
-                        printTable();
+                        if(printing)
+                        {
+                            printReg();
+                            printTable();
+                        }
                         ui->console->setText("Error in running program!\n");
                         ui->run_btn->setEnabled(false);
                         ui->next_btn->setEnabled(false);
@@ -2110,8 +1691,11 @@ void MainWindow::on_next_btn_clicked()
 
 
 
-            printReg();
-            printTable();
+                    if(printing)
+                    {
+                        printReg();
+                        printTable();
+                    }
     //else end
         }
 }

@@ -122,6 +122,8 @@ private:
 
     int reseter=1;
     int compiled=0;
+    int printing;
+    int run;
 
 
 
