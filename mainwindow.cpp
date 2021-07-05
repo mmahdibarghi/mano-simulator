@@ -403,7 +403,7 @@ void MainWindow::on_compile_btn_clicked()
             }
             else if(riz.at(0)[riz.at(0).size()-1]==',')
             {
-                allDatas[riz.at(0)]=i+1;
+                allDatas[riz.at(0)]=i;
                 QTableWidgetItem *itmlabel = new QTableWidgetItem();
                 itmlabel->setText(riz.at(0));
                 ui->ram_tb->setItem(lc,0,itmlabel);
@@ -1726,8 +1726,11 @@ void MainWindow::on_next_btn_clicked()
                             ui->operation->setText("PC <- AR , SC <- 0");
                             SC=0;
                             clk=0;
-                            lineStep++;
                             PC=AR;
+                            lineStep=allDatas[riz.at(1)+","]-1;
+
+                            lineStep++;
+                            ui->in_line->setText(QString::number(lineStep));
                             memorystep=PC.to_ulong();
 
                         }
@@ -1775,9 +1778,11 @@ void MainWindow::on_next_btn_clicked()
                         else if(clk==5)
                         {
                             clk=0;
+                            PC=AR;
+                            lineStep=allDatas[riz.at(1)+","]; //shak
                             lineStep++;
                             SC=0;
-                            PC=AR;
+
                             memorystep=PC.to_ulong();
                             ui->operation->setText("PC <- AR , SC <- 0");
 
@@ -1836,6 +1841,8 @@ void MainWindow::on_next_btn_clicked()
                             if(DR.to_ulong()==0)
                             {
                                 inrPC();
+                                lineStep++;   //shak
+                                memorystep++;
                                 ui->operation->setText("PC <- PC+1 , M[AR] <- DR, SC <- 0");
                             }
 
@@ -1890,6 +1897,8 @@ void MainWindow::on_next_btn_clicked()
                         if(FGI==1)
                         {
                             inrPC();
+                            lineStep++; //shak
+                            memorystep++;
                             ui->operation->setText("PC <- PC+1 , SC <- 0");
                         }
                     }
@@ -1902,6 +1911,8 @@ void MainWindow::on_next_btn_clicked()
                         if(FGO==1)
                         {
                             inrPC();
+                            lineStep++; //shak
+                            memorystep++;
                             ui->operation->setText("PC <- PC+1 , SC <- 0");
                         }
                     }
@@ -1992,6 +2003,7 @@ void MainWindow::on_next_btn_clicked()
                         {
                             ui->operation->setText("PC <- PC+1  , SC <- 0 ");
                             inrPC();
+                            lineStep++; //shak
                             memorystep++;
                         }
                     }
@@ -2004,6 +2016,7 @@ void MainWindow::on_next_btn_clicked()
                         if(AC[15]==1)
                         {
                             inrPC();
+                            lineStep++; //shak
                             memorystep++;
                             ui->operation->setText("PC <- PC+1  , SC <- 0 ");
                         }
@@ -2017,6 +2030,7 @@ void MainWindow::on_next_btn_clicked()
                         if(AC.to_ulong()==0)
                         {
                             inrPC();
+                            lineStep++; //shak
                             memorystep++;
                             ui->operation->setText("PC <- PC+1  , SC <- 0 ");
                         }
@@ -2030,6 +2044,7 @@ void MainWindow::on_next_btn_clicked()
                         if(E.to_ulong()==0)
                         {
                             inrPC();
+                            lineStep++; //shak
                             memorystep++;
                             ui->operation->setText("PC <- PC+1  , SC <- 0 ");
                         }

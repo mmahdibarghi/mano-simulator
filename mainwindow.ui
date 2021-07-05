@@ -586,7 +586,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="operation"/>
+         <widget class="QLineEdit" name="operation">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
