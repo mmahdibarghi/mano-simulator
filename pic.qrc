@@ -9,5 +9,9 @@
     </qresource>
     <qresource prefix="/">
         <file>C:/Users/SabaNet/Desktop/Untitled-1.jpg</file>
+        <file>blue.jpg</file>
+        <file>blue.png</file>
+        <file>blue2.png</file>
+        <file>blue3.png</file>
     </qresource>
 </RCC>

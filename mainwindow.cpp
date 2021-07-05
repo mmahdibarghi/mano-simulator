@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->savebtn->setIcon(QIcon(":/pic/saveicon"));
     ui->openbtn->setIcon(QIcon(":/pic/openicon"));
     ui->newbtn->setIcon(QIcon(":/pic/newicon"));
+    setFixedSize(1535,745);
     on_reset_btn_clicked();
 
 }
@@ -315,6 +316,7 @@ void MainWindow::on_reset_btn_clicked()
     ui->next_btn->setEnabled(true);
     ui->in_line->setText("");
     ui->operation->setText("");
+    memoryToLine.clear();
 
 
 
@@ -369,6 +371,8 @@ void MainWindow::on_compile_btn_clicked()
         }
 
         lc1++;
+        //memoryToLine[lc1]=i;
+
 
     }
 
@@ -1288,6 +1292,9 @@ void MainWindow::on_next_btn_clicked()
                             {
 
                             }
+                            //qDebug()<<AR.to_ulong();
+                            //lineStep=memoryToLine[AR.to_ulong()];
+                            //ui->in_line->setText(QString::number(lineStep));
                         }
 
                         //t4

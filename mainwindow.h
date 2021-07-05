@@ -130,6 +130,7 @@ private:
     int compiled=0;
     int printing;
     int run;
+    map<int,int> memoryToLine;
 
 
 
