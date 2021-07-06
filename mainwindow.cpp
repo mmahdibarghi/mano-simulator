@@ -251,7 +251,7 @@ void MainWindow::on_openbtn_clicked()
             infile.getline(tmp,300);
             ui->editor->insertPlainText(QString::fromStdString(tmp));
             ui->editor->insertPlainText("\n");
-            on_reset_btn_clicked();
+            compiled=0;
 
         }
 
@@ -264,20 +264,20 @@ void MainWindow::on_openbtn_clicked()
 void MainWindow::on_action_Open_triggered()
 {
     on_openbtn_clicked();
-    on_reset_btn_clicked();
+    compiled=0;
 }
 
 void MainWindow::on_action_New_triggered()
 {
     ui->editor->clear();
     issaved="";
-    on_reset_btn_clicked();
+    compiled=0;
 }
 
 void MainWindow::on_newbtn_clicked()
 {
     on_action_New_triggered();
-    on_reset_btn_clicked();
+    compiled=0;
 }
 
 void MainWindow::on_reset_btn_clicked()
@@ -370,9 +370,10 @@ void MainWindow::on_compile_btn_clicked()
             }
         }
 
-        lc1++;
-        //memoryToLine[lc1]=i;
 
+        memoryToLine[lc1]=i;
+        qDebug()<<"memory: "<<lc1 <<"  ,,,  " <<"line :"<<i;
+        lc1++;
 
     }
 
@@ -1274,6 +1275,7 @@ void MainWindow::on_next_btn_clicked()
 
                     else if(riz.at(0)=="BUN")
                     {
+                        int Ichecker;
                         if(clk==3)
                         {
                             clk++;
@@ -1287,13 +1289,20 @@ void MainWindow::on_next_btn_clicked()
 
                                 }
 
+                                qDebug()<<"go to memory: "<<ram[tmpAR.to_ulong()].to_ulong();
+                                qDebug()<<"go to line: "<<AR.to_ulong();
+                                Ichecker=1;
+                                //lineStep=memoryToLine[AR.to_ulong()]-1;
+
+
                             }
                             else
                             {
+                                Ichecker=0;
 
                             }
                             //qDebug()<<AR.to_ulong();
-                            //lineStep=memoryToLine[AR.to_ulong()];
+                            //
                             //ui->in_line->setText(QString::number(lineStep));
                         }
 
@@ -1304,7 +1313,17 @@ void MainWindow::on_next_btn_clicked()
                             SC=0;
                             clk=0;
                             PC=AR;
-                            lineStep=allDatas[riz.at(1)+","]-1;
+                            if(Ichecker)
+                            {
+                               lineStep=memoryToLine[AR.to_ulong()]-1;
+                               qDebug()<<"gotolineStep: "<<lineStep;
+                            }
+                            else
+                            {
+                               lineStep=allDatas[riz.at(1)+","]-1;
+                               qDebug()<<"gotolineStep!!!!!!!!!!!!: "<<lineStep;
+                            }
+
 
                             lineStep++;
                             //ui->in_line->setText(QString::number(lineStep));
@@ -1344,9 +1363,11 @@ void MainWindow::on_next_btn_clicked()
                             ui->operation->setText("M[AR] <- PC , AR <- AR+1");
                             clk++;
                             inrAR();
+                            qDebug()<<"where to write in memory"<<AR.to_ulong()-1;
+                            qDebug()<<"write in memory: "<<PC.to_ulong();
                             for (int bitC=0;bitC<12;bitC++)
                             {
-                                ram[AR.to_ulong()][bitC]=PC[bitC];
+                                ram[(AR.to_ulong())-1][bitC]=PC[bitC];
 
                             }
                         }
@@ -1359,6 +1380,7 @@ void MainWindow::on_next_btn_clicked()
                             PC=AR;
                             lineStep=allDatas[riz.at(1)+","]; //shak
                             lineStep++;
+                            qDebug()<<"line: "<<lineStep;
                             SC=0;
 
                             memorystep=PC.to_ulong();
