@@ -372,7 +372,7 @@ void MainWindow::on_compile_btn_clicked()
 
 
         memoryToLine[lc1]=i;
-        qDebug()<<"memory: "<<lc1 <<"  ,,,  " <<"line :"<<i;
+        //qDebug()<<"memory: "<<lc1 <<"  ,,,  " <<"line :"<<i;
         lc1++;
 
     }
@@ -1289,8 +1289,8 @@ void MainWindow::on_next_btn_clicked()
 
                                 }
 
-                                qDebug()<<"go to memory: "<<ram[tmpAR.to_ulong()].to_ulong();
-                                qDebug()<<"go to line: "<<AR.to_ulong();
+                                //qDebug()<<"go to memory: "<<ram[tmpAR.to_ulong()].to_ulong();
+                                //qDebug()<<"go to line: "<<AR.to_ulong();
                                 Ichecker=1;
                                 //lineStep=memoryToLine[AR.to_ulong()]-1;
 
@@ -1316,12 +1316,12 @@ void MainWindow::on_next_btn_clicked()
                             if(Ichecker)
                             {
                                lineStep=memoryToLine[AR.to_ulong()]-1;
-                               qDebug()<<"gotolineStep: "<<lineStep;
+                               //qDebug()<<"gotolineStep: "<<lineStep;
                             }
                             else
                             {
                                lineStep=allDatas[riz.at(1)+","]-1;
-                               qDebug()<<"gotolineStep!!!!!!!!!!!!: "<<lineStep;
+                               //qDebug()<<"gotolineStep!!!!!!!!!!!!: "<<lineStep;
                             }
 
 
@@ -1363,8 +1363,8 @@ void MainWindow::on_next_btn_clicked()
                             ui->operation->setText("M[AR] <- PC , AR <- AR+1");
                             clk++;
                             inrAR();
-                            qDebug()<<"where to write in memory"<<AR.to_ulong()-1;
-                            qDebug()<<"write in memory: "<<PC.to_ulong();
+                            //qDebug()<<"where to write in memory"<<AR.to_ulong()-1;
+                            //qDebug()<<"write in memory: "<<PC.to_ulong();
                             for (int bitC=0;bitC<12;bitC++)
                             {
                                 ram[(AR.to_ulong())-1][bitC]=PC[bitC];
@@ -1380,7 +1380,7 @@ void MainWindow::on_next_btn_clicked()
                             PC=AR;
                             lineStep=allDatas[riz.at(1)+","]; //shak
                             lineStep++;
-                            qDebug()<<"line: "<<lineStep;
+                            //qDebug()<<"line: "<<lineStep;
                             SC=0;
 
                             memorystep=PC.to_ulong();
