@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/pic">
+        <file>saveicon.png</file>
+        <file>openicon.png</file>
+        <file>newicon.png</file>
+        <file>saveasicon.png</file>
+        <file>closeicon.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>blue.jpg</file>
+        <file>blue.png</file>
+        <file>blue2.png</file>
+        <file>blue3.png</file>
+    </qresource>
+</RCC>
